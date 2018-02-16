@@ -3,7 +3,7 @@
 fdisk -l
 read -p "Fresh machine?(type y we will create partition automaticly[or n]): " fresh 
 read -p "Type the disk you want to install[like: /dev/sda]: " disk
-if [${fresh} == 'y']
+if [ ${fresh} == 'y' ]
     then
     parted ${disk} -s mklabel gpt mkpart ESP fat32 1M 513M mkpart primary ext4 513M 100% 
     mount ${disk}2 /mnt 
