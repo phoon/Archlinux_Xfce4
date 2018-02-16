@@ -26,6 +26,7 @@ read -p "Type the password: " password
 read -p "Are you from China?(type y we will replace the mirrorlist[or n]) :" china 
 if [ ${china} == "y" ]
     then
+    wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/mirrorlist
     mv mirrorlist /etc/pacman.d/mirrorlist
     echo "\nen_US.UTF-8 UTF-8\nzh_CN.UTF-8 UTF-8\nzh_TW.UTF-8 UTF-8" >> /mnt/etc/locale.genfstab
     else 
