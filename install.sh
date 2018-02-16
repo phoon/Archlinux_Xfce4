@@ -53,9 +53,10 @@ arch-chroot /mnt pacman -S --noconfirm mesa-demos  xfce4 xfce4-goodies lightdm l
 arch-chroot /mnt pacman -S --noconfirm udisks2 ntfs-3g gvfs networkmanager gnome-keyring libsecret network-manager-applet
 arch-chroot /mnt pacman -S --noconfirm xfce4-notifyd ttf-dejavu wqy-microhei file-roller 
 #install applications
-arch-chroot /mnt pacman -S  --noconfirm firefox vlc thunderbird 
+arch-chroot /mnt pacman -S  --noconfirm firefox vlc thunderbird git ffmpegthumbnailer gst-libav
 #create user
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash ${username}
+arch-chroot /mnt echo "${username} ALL=(ALL) ALL" >> /etc/sudoers
 arch-chroot /mnt echo ${username}:${password} | chpasswd
 #configure system
 arch-chroot /mnt systemctl enable NetworkManager 
@@ -66,6 +67,7 @@ arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 #reboot
 echo "Completing..."
+arch-chroot /mnt exit
 umount -R /mnt
 reboot 
 
