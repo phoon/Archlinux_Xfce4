@@ -1,14 +1,24 @@
 # !/bin/bash
 
 fdisk -l
-read -p "Type the partition you want to install: " partition
-mount ${partition} /mnt 
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot 
+read -p "Fresh machine?(type y we will create partition automaticly[or n]): " fresh 
+read -p "Type the disk you want to install[like: /dev/sda]: " disk
+if [${fresh} == 'y']
+    then
+    parted ${disk} -s mklabel gpt mkpart ESP fat32 1M 513M mkpart primary ext4 513M 100% 
+    mount ${disk}2 /mnt 
+    mkdir /mnt/boot
+    mount /dev/sda1 /mnt/boot 
+    else
+    read -p "Type the partition you want to install(like :/dev/sda2): " partition
+    mount ${partition} /mnt 
+    mkdir /mnt/boot
+    mount /dev/sda1 /mnt/boot 
+fi 
 read -p "Type your hostname(like:Arch): " hostname
 read -p "Type the username you want to create: " username
 read -p "Type the password: " password
-read -p "Are you from China?(input y we will replace the mirrorlist[or n]) :" china 
+read -p "Are you from China?(type y we will replace the mirrorlist[or n]) :" china 
 if [ ${china} == 'y' ]
     then
     mv mirrorlist /etc/pacman.d/mirrorlist
