@@ -28,13 +28,16 @@ if [ ${china} == "y" ]
     then
     wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/mirrorlist
     mv mirrorlist /etc/pacman.d/mirrorlist
+    pacman -Syy
+    pacstrap -i /mnt base base-devel --noconfirm
     echo "\nen_US.UTF-8 UTF-8\nzh_CN.UTF-8 UTF-8\nzh_TW.UTF-8 UTF-8" >> /mnt/etc/locale.genfstab
     else 
+    pacman -Syy
+    pacstrap -i /mnt base base-devel --noconfirm
     echo "\nen_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen 
 fi
 
-pacman -Syy
-pacstrap -i /mnt base base-devel --noconfirm
+
 genfstab -U /mnt >> /mnt/etc/fstab
 # in arch-chroot
 
