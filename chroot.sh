@@ -14,7 +14,7 @@ echo ${hostname} > /etc/hostname
 useradd -m -g users -G wheel -s /bin/bash ${username}
 echo ${username}:${password} | chpasswd
 #add to sudoers
-
+echo "${username} ALL=(ALL) ALL" >> /etc/sudoers
 #grub
 pacman -S --noconfirm intel-ucode os-prober grub efibootmgr
 #to use wifi-menu
