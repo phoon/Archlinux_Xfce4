@@ -1,11 +1,22 @@
-# !/bin/bash
+#!/bin/bash 
 
-fdisk -l
+export hostname
+export username
+export password
 
-read -p "Fresh machine?(type y we will create partition automaticly [ or n ]): " fresh 
-read -p "Type the disk you want to install[like: /dev/sda]: " disk
-if [ ${fresh} == "y" ]
+#partition 
+echo -e "\033[35m Fresh machine and automatically installed with scripts?(y/n):  \033[0m"
+read fresh 
+echo -e "\033[35m Type the hostname you want to set up(eg. Arch): \033[0m"
+read hostname
+echo -e "\033[35m Type the username you want to create: \033[0m"
+read username
+echo -e "\033[35m Type the password of the user you just create: \033[0m"
+read password
+if [ $fresh == "y" ]
     then
+    echo -e "\033[35m Type the disk you want to install(eg. /dev/sda): \033[0m"
+    read disk
     parted ${disk} -s mklabel gpt mkpart ESP fat32 1M 513M mkpart primary ext4 514M 100%
     set 1 boot on
     mkfs.vfat -F32 ${disk}1 
@@ -14,64 +25,26 @@ if [ ${fresh} == "y" ]
     mkdir /mnt/boot
     mount ${disk}1 /mnt/boot 
     else
-    read -p "Type the partition you want to install(like :/dev/sda2): " partition
+    echo -e "\033[35m Type the partition you want to install(eg. /dev/sda2): \033[0m"
+    read partition
+    echo -e "\033[35m Type the EFI partition(usually is /dev/sdx1): \033[0m"
+    read efi
     mkfs.ext4 ${partition}
-    mount ${partition} /mnt 
+    mount ${partion} /mnt
     mkdir /mnt/boot
-    mount /dev/sda1 /mnt/boot 
+    mount ${efi} /mnt/boot
 fi 
-read -p "Type your hostname(like:Arch): " hostname
-read -p "Type the username you want to create: " username
-read -p "Type the password: " password
-read -p "Are you from China?(type y we will replace the mirrorlist[or n]) :" china 
-if [ ${china} == "y" ]
-    then
-    wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/mirrorlist
-    mv mirrorlist /etc/pacman.d/mirrorlist
-    pacman -Syy
-    pacstrap -i /mnt base base-devel --noconfirm
-    echo "\nen_US.UTF-8 UTF-8\nzh_CN.UTF-8 UTF-8\nzh_TW.UTF-8 UTF-8" >> /mnt/etc/locale.genfstab
-    else 
-    pacman -Syy
-    pacstrap -i /mnt base base-devel --noconfirm
-    echo "\nen_US.UTF-8 UTF-8" >> /mnt/etc/locale.gen 
-fi
-
-
+wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/mirrorlist
+mv mirrorlist /etc/pacman.d/mirrorlist
+pacman -Syy
+pacstrap -i /mnt base base-devel --noconfirm
 genfstab -U /mnt >> /mnt/etc/fstab
-# in arch-chroot
 
-arch-chroot /mnt locale-gen 
-arch-chroot /mnt echo LANG=en_US.UTF-8 > /etc/locale.conf
-arch-chroot /mnt hostname ${hostname}
-arch-chroot /mnt echo ${hostname} > /etc/hostname
-
-#grub
-arch-chroot /mnt pacman -S --noconfirm intel-ucode os-prober grub efibootmgr 
-#to use wifi-menu
-arch-chroot /mnt pacman -S --noconfirm dialog wpa_supplicant 
-#install base DE
-arch-chroot /mnt pacman -S --noconfirm xorg xorg-xinit xf86-video-intel libinput alsa-utils pulseaudio
-arch-chroot /mnt pacman -S --noconfirm mesa-demos  xfce4 xfce4-goodies lightdm lightdm-gtk-greeter gtk-engine-murrine
-arch-chroot /mnt pacman -S --noconfirm udisks2 ntfs-3g gvfs networkmanager gnome-keyring libsecret network-manager-applet
-arch-chroot /mnt pacman -S --noconfirm xfce4-notifyd ttf-dejavu wqy-microhei file-roller 
-#install applications
-arch-chroot /mnt pacman -S  --noconfirm firefox vlc thunderbird git ffmpegthumbnailer gst-libav
-#create user
-arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash ${username}
-arch-chroot /mnt echo "${username} ALL=(ALL) ALL" >> /etc/sudoers
-arch-chroot /mnt echo ${username}:${password} | chpasswd
-#configure system
-arch-chroot /mnt systemctl enable NetworkManager 
-arch-chroot /mnt systemctl enable lightdm 
-arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=Arch --recheck
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg 
-
-
-#reboot
-echo "Completing..."
-arch-chroot /mnt exit
+#chroot
+wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/chroot.sh
+mv chroot.sh /mnt/root/chroot.sh
+chmod +x /mnt/root/chroot.sh
+arch-chroot /mnt /root/chroot.sh
+umount -R /mnt/boot
 umount -R /mnt
-reboot 
-
-
+reboot
