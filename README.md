@@ -5,7 +5,7 @@ Before you install,be sure your machine is Intel X86_64 platform and UEFI start-
 ### How to use it
 ```Shell
     ##Download or clone this repository to your local machine,then:
-    wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/install.sh
+    wget https://raw.githubusercontent.com/phoon/Archlinux_Xfce4/master/install.sh
     chmod +x install.sh
     ./install.sh
 ```

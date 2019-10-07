@@ -34,10 +34,10 @@ if [ $fresh == "y" ]
     mkdir /mnt/boot
     mount ${efi} /mnt/boot
 fi 
-wget https://raw.githubusercontent.com/iPeven/Archlinux_Xfce4/master/mirrorlist
+wget https://raw.githubusercontent.com/phoon/Archlinux_Xfce4/master/mirrorlist
 mv mirrorlist /etc/pacman.d/mirrorlist
 pacman -Syy
-pacstrap -i /mnt base base-devel --noconfirm
+pacstrap -i /mnt base base-devel linux --noconfirm
 genfstab -U /mnt >> /mnt/etc/fstab
 
 #chroot
