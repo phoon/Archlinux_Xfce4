@@ -37,7 +37,7 @@ fi
 wget https://raw.githubusercontent.com/phoon/Archlinux_Xfce4/master/mirrorlist
 mv mirrorlist /etc/pacman.d/mirrorlist
 pacman -Syy
-pacstrap -i /mnt base base-devel linux --noconfirm
+pacstrap -i /mnt base base-devel linux linux-firmware --noconfirm
 genfstab -U /mnt >> /mnt/etc/fstab
 
 #chroot
