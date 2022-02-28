@@ -13,8 +13,7 @@ echo -e "\033[35m Type the username you want to create: \033[0m"
 read username
 echo -e "\033[35m Type the password of the user you just create: \033[0m"
 read password
-if [ $fresh == "y" ]
-    then
+if [[ $fresh == "y" ]]; then
     echo -e "\033[35m Type the disk you want to install(eg. /dev/sda): \033[0m"
     read disk
     parted ${disk} -s mklabel gpt mkpart ESP fat32 1M 513M mkpart primary ext4 514M 100%
@@ -24,7 +23,7 @@ if [ $fresh == "y" ]
     mount ${disk}2 /mnt 
     mkdir /mnt/boot
     mount ${disk}1 /mnt/boot 
-    else
+else
     echo -e "\033[35m Type the partition you want to install(eg. /dev/sda2): \033[0m"
     read partition
     echo -e "\033[35m Type the EFI partition(usually is /dev/sdx1): \033[0m"
